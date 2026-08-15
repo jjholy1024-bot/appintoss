@@ -1,0 +1,64 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root {
+  --font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  
+  /* Requested Color Palette */
+  --bg-color: #F7F5F0;             /* 🤍 화면 전체 배경 */
+  --beige-box: #EAE5DA;            /* 베이지: 사진/썸네일/업로드 박스 배경 */
+  --greige-brown: #A69A85;         /* 그레이지 브라운: 라벨 텍스트, 테두리(점선/실선), 칩 텍스트 */
+  --text-main: #3A362E;            /* 짙은 브라운블랙: 본문 텍스트, 타이틀, 인풋 */
+  --terracotta: #B5502E;           /* 테라코타: 포인트 컬러 (버튼, 신파 칩, 49재 카드) */
+  
+  /* Derived / Harmonized Tones */
+  --terracotta-dark: #963E20;
+  --terracotta-light: #F7ECE8;
+  --text-sub: #5C5549;
+  --text-muted: #8E8373;
+  --card-bg: #FFFFFF;
+  --border-light: #EAE5DA;
+  --border-greige: #A69A85;
+  --border-dashed: #B8ADA0;
+  
+  /* Tone Specific Accents */
+  --tone-sinpa: #B5502E;           /* 테라코타 신파 */
+  --tone-sinpa-bg: #F7ECE8;
+  --tone-comic: #C67E28;           /* 웜 머스터드 브라운 코믹 */
+  --tone-comic-bg: #FAF1E4;
+  --tone-poetic: #5E7A60;          /* 세이지 올리브 시적 */
+  --tone-poetic-bg: #EFF4EF;
+  --reunited-badge: #7E4A88;
+  --reunited-bg: #F5EEF7;
+
+  /* UI Tokens */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 2px 8px rgba(58, 54, 46, 0.04);
+  --shadow-md: 0 6px 16px rgba(58, 54, 46, 0.06);
+  --shadow-lg: 0 12px 32px rgba(58, 54, 46, 0.09);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-main);
+  background-color: #E7E3DC;
+  min-width: 320px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}

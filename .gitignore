@@ -1,0 +1,15 @@
+# Ignored directories and files
+.agent/
+*.png
+
+# Node / Build artifacts
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm
+*.log
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
