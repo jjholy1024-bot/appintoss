@@ -49,11 +49,13 @@ export const INITIAL_SOCKS: SockMemorial[] = [
     lastSeenDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     location: '소파 밑 먼지 소굴',
     tone: '코믹',
-    letter: `기적은 일어났다!\n\n소파 밑 먼지 소굴에서 20일 만에 대탈출 성공! 다시 서랍 속 내 반쪽 짝을 만났을 때 눈물(땀인가?)이 쏟아졌다.\n\n이제 다시 한 쌍의 완벽한 듀오로 컴백했으니, 앞으로 10년은 더 뛰어보자고!`,
+    letter: `안녕! 나 지금 소파 밑 먼지 소굴에 갇혀서 탈출 작전 짜는 중이야.\n\n2024년 신년부터 매일 발에 딱 붙어 지냈는데, 리모컨 잡으려다 미끄러져서 이 먼지투성이 던전에 떨어졌지 뭐야. 먼지 뭉치들이랑 동거 중인데 생각보다 아늑하긴 하다?\n\n혹시 청소기 돌릴 일 있으면 나 좀 구해줘. 반쪽이가 서랍에서 외로워하고 있을 텐데, 얼른 다시 만나야지!\n\n기적은 일어났다!\n\n소파 밑 먼지 소굴에서 20일 만에 대탈출 성공! 다시 서랍 속 내 반쪽 짝을 만났을 때 눈물(땀인가?)이 쏟아졌다.\n\n이제 다시 한 쌍의 완벽한 듀오로 컴백했으니, 앞으로 10년은 더 뛰어보자고!`,
     createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
     isReunited: true,
     reunitedDate: new Date().toISOString().split('T')[0],
-    tributeCount: 32
+    tributeCount: 32,
+    hasReunionAddendum: true,
+    reunionAddendumText: `기적은 일어났다!\n\n소파 밑 먼지 소굴에서 20일 만에 대탈출 성공! 다시 서랍 속 내 반쪽 짝을 만났을 때 눈물(땀인가?)이 쏟아졌다.\n\n이제 다시 한 쌍의 완벽한 듀오로 컴백했으니, 앞으로 10년은 더 뛰어보자고!`
   },
   {
     id: 'sock-5',
@@ -89,10 +91,12 @@ export const INITIAL_SOCKS: SockMemorial[] = [
     lastSeenDate: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     location: '친구 집 빨래 건조대',
     tone: '코믹',
-    letter: `친구 집 건조대에서 내 운명이 갈릴 줄이야.\n\n친구 녀석이 날 자기 양말인 줄 알고 가져갔는지 세탁기 뒤로 던졌는지 모르겠지만, 난 여기서 새로운 가족을 찾았다! 친구 짝양말들이랑 잘 놀고 있으니 걱정 마쇼!`,
+    letter: `친구 집 건조대에서 내 운명이 갈릴 줄이야.\n\n친구 녀석이 날 자기 양말인 줄 알고 가져갔는지 세탁기 뒤로 던졌는지 모르겠지만, 아무튼 나는 지금 남의 집 빨래 더미 속에서 표류 중이다. 2023년 가을부터 정들었던 내 주인 발은 대체 언제 다시 만날 수 있을까.\n\n주인아, 나 여기 있다! 친구 집 놀러 갈 일 있으면 건조대 좀 뒤져봐라!\n\n드디어 대탈출 성공! 친구 집 빨래 더미를 뚫고 극적으로 귀환했다.\n\n알고 보니 친구 집 세탁기 뒤에 숨어있었던 거였어. 이제 다시 원래 주인 발에 찰싹 붙어서 아가일 무늬 자랑하며 살아야지. 다들 궁금해했지? 나 돌아왔다!`,
     createdAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
     isReunited: true,
     reunitedDate: new Date().toISOString().split('T')[0],
-    tributeCount: 21
+    tributeCount: 21,
+    hasReunionAddendum: true,
+    reunionAddendumText: `드디어 대탈출 성공! 친구 집 빨래 더미를 뚫고 극적으로 귀환했다.\n\n알고 보니 친구 집 세탁기 뒤에 숨어있었던 거였어. 이제 다시 원래 주인 발에 찰싹 붙어서 아가일 무늬 자랑하며 살아야지. 다들 궁금해했지? 나 돌아왔다!`
   }
 ];

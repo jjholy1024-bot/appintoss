@@ -2,6 +2,7 @@
 
 :root {
   --font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-serif: Georgia, "Noto Serif KR", "Nanum Myeongjo", serif;
   
   /* Requested Color Palette */
   --bg-color: #F7F5F0;             /* 🤍 화면 전체 배경 */
@@ -27,8 +28,8 @@
   --tone-comic-bg: #FAF1E4;
   --tone-poetic: #5E7A60;          /* 세이지 올리브 시적 */
   --tone-poetic-bg: #EFF4EF;
-  --reunited-badge: #7E4A88;
-  --reunited-bg: #F5EEF7;
+  --reunited-badge: #963E20;       /* 팔레트 안 테라코타 진하게 - 재회 */
+  --reunited-bg: #F7ECE8;
 
   /* UI Tokens */
   --radius-sm: 10px;
@@ -52,9 +53,6 @@ body {
   background-color: #E7E3DC;
   min-width: 320px;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
