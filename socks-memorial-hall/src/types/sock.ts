@@ -13,6 +13,10 @@ export interface SockMemorial {
   isReunited: boolean;
   reunitedDate?: string;
   tributeCount: number;
+  has49Addendum?: boolean;
+  hasReunionAddendum?: boolean;
+  reunionAddendumText?: string; // 되돌리기 시 letter에서 이 문단만 제거하기 위해 원문 보관
+  isShared?: boolean; // 친구에게 공유 링크를 만든 적 있는지
 }
 
-export type ViewMode = 'gallery' | 'upload' | 'letter_result' | 'detail';
+export type ViewMode = 'home' | 'gallery' | 'upload' | 'letter_result' | 'detail' | 'settings';

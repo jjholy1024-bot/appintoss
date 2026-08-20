@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { SockMemorial, ViewMode } from './types/sock';
 import { INITIAL_SOCKS } from './data/initialSocks';
+import { HomeView } from './components/home/HomeView';
 import { GalleryView } from './components/gallery/GalleryView';
 import { UploadForm } from './components/upload/UploadForm';
 import { LetterResultView } from './components/letter/LetterResultView';
 import { CardDetailView } from './components/detail/CardDetailView';
+import { SharedSockView } from './components/shared/SharedSockView';
+import { SettingsView } from './components/settings/SettingsView';
+import { BottomTabBar } from './components/common/BottomTabBar';
 
 const STORAGE_KEY = 'socks_memorial_hall_data_v1';
 
@@ -22,9 +26,19 @@ function App() {
     return INITIAL_SOCKS;
   });
 
-  const [viewMode, setViewMode] = useState<ViewMode>('gallery');
+  const [viewMode, setViewMode] = useState<ViewMode>('home');
   const [selectedSock, setSelectedSock] = useState<SockMemorial | null>(null);
   const [latestCreatedSock, setLatestCreatedSock] = useState<SockMemorial | null>(null);
+
+  // 친구 공유 링크(?shared=sockId)로 들어온 경우 감지
+  const [sharedSockId] = useState<string | null>(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('shared');
+    } catch {
+      return null;
+    }
+  });
+  const [showShared, setShowShared] = useState<boolean>(!!sharedSockId);
 
   // Sync to localStorage
   useEffect(() => {
@@ -61,12 +75,48 @@ function App() {
     }
   };
 
+  // Handle full data reset
+  const handleResetData = () => {
+    setSocks([]);
+    setSelectedSock(null);
+    setLatestCreatedSock(null);
+  };
+
+  if (showShared && sharedSockId) {
+    return (
+      <div className="memorial-app-wrapper">
+        <main className="memorial-main-frame">
+          <SharedSockView
+            sockId={sharedSockId}
+            onClose={() => {
+              setShowShared(false);
+              window.history.replaceState({}, '', window.location.pathname);
+            }}
+          />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="memorial-app-wrapper">
       <main className="memorial-main-frame">
+        {viewMode === 'home' && (
+          <HomeView
+            socks={socks}
+            onAddNew={() => setViewMode('upload')}
+            onSelectSock={(sock) => {
+              setSelectedSock(sock);
+              setViewMode('detail');
+            }}
+            onViewGallery={() => setViewMode('gallery')}
+          />
+        )}
+
         {viewMode === 'gallery' && (
           <GalleryView
             socks={socks}
+            onBack={() => setViewMode('home')}
             onAddNew={() => setViewMode('upload')}
             onSelectSock={(sock) => {
               setSelectedSock(sock);
@@ -77,7 +127,7 @@ function App() {
 
         {viewMode === 'upload' && (
           <UploadForm
-            onBack={() => setViewMode('gallery')}
+            onBack={() => setViewMode('home')}
             onSubmitSuccess={handleAddNewSuccess}
           />
         )}
@@ -99,6 +149,18 @@ function App() {
             onBack={() => setViewMode('gallery')}
             onUpdateSock={handleUpdateSock}
             onDeleteSock={handleDeleteSock}
+          />
+        )}
+
+        {viewMode === 'settings' && (
+          <SettingsView socks={socks} onResetData={handleResetData} />
+        )}
+
+        {(viewMode === 'home' || viewMode === 'gallery' || viewMode === 'settings') && (
+          <BottomTabBar
+            activeTab={viewMode}
+            onNavigate={(tab) => setViewMode(tab)}
+            onAddNew={() => setViewMode('upload')}
           />
         )}
       </main>

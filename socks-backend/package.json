@@ -1,0 +1,12 @@
+{
+  "name": "socks-backend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@upstash/redis": "^1.34.3"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.2.0",
+    "typescript": "^5.5.0"
+  }
+}

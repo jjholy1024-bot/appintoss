@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Sparkles, Check } from 'lucide-react';
+import { Camera, Sparkles } from 'lucide-react';
 import { Header } from '../common/Header';
 import { SockMemorial, SockTone } from '../../types/sock';
-import { SOCK_PRESETS } from '../../assets/sockPresets';
 import { getTodayDateString } from '../../utils/date';
 import { generateLetter } from '../../utils/letterGenerator';
+import { compressImage } from '../../utils/image';
 
 interface UploadFormProps {
   onBack: () => void;
@@ -12,14 +12,14 @@ interface UploadFormProps {
 }
 
 export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess }) => {
-  const [photoUrl, setPhotoUrl] = useState<string>(SOCK_PRESETS[0].svgDataUrl);
-  const [selectedPresetId, setSelectedPresetId] = useState<string>(SOCK_PRESETS[0].id);
-  const [isCustomPhoto, setIsCustomPhoto] = useState<boolean>(false);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<boolean>(false);
 
-  const [name, setName] = useState<string>('노란 줄무늬 양말');
-  const [wornSince, setWornSince] = useState<string>('2024년 봄부터');
+  const [name, setName] = useState<string>('');
+  const [nameError, setNameError] = useState<boolean>(false);
+  const [wornSince, setWornSince] = useState<string>('');
   const [lastSeenDate, setLastSeenDate] = useState<string>(getTodayDateString());
-  const [location, setLocation] = useState<string>('세탁기 배수구 뒤편');
+  const [location, setLocation] = useState<string>('');
   const [tone, setTone] = useState<SockTone>('신파');
 
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -32,36 +32,38 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
     '남겨진 반쪽을 위한 이별 편지를 작성하는 중...',
   ];
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    try {
+      const compressed = await compressImage(file);
+      setPhotoUrl(compressed);
+      setPhotoError(false);
+    } catch {
+      // 압축 실패 시(손상된 파일 등) 원본이라도 사용
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
           setPhotoUrl(event.target.result as string);
-          setIsCustomPhoto(true);
-          setSelectedPresetId('');
+          setPhotoError(false);
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSelectPreset = (preset: typeof SOCK_PRESETS[0]) => {
-    setPhotoUrl(preset.svgDataUrl);
-    setSelectedPresetId(preset.id);
-    setIsCustomPhoto(false);
-    if (!name || SOCK_PRESETS.some(p => p.name === name)) {
-      setName(preset.name);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      alert('양말의 이름을 입력해주세요!');
+    if (!photoUrl) {
+      setPhotoError(true);
       return;
     }
+    if (!name.trim()) {
+      setNameError(true);
+      return;
+    }
+    setNameError(false);
 
     setIsGenerating(true);
     let step = 0;
@@ -70,11 +72,8 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
       setLoadingTextIndex(step);
     }, 800);
 
-    setTimeout(() => {
-      clearInterval(intervalId);
-      setIsGenerating(false);
-
-      const generatedLetter = generateLetter({
+    try {
+      const generatedLetter = await generateLetter({
         name,
         wornSince,
         lastSeenDate,
@@ -97,7 +96,10 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
       };
 
       onSubmitSuccess(newSock);
-    }, 2200);
+    } finally {
+      clearInterval(intervalId);
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -118,18 +120,23 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
           </div>
 
           <div className="photo-selection-container">
-            <div className="photo-preview-box">
-              <img src={photoUrl} alt="선택된 양말" className="preview-img" />
-              {isCustomPhoto && (
-                <button
-                  type="button"
-                  className="photo-remove-btn"
-                  onClick={() => {
-                    handleSelectPreset(SOCK_PRESETS[0]);
-                  }}
-                >
-                  초기화
-                </button>
+            <div className={`photo-preview-box ${photoError ? 'error' : ''}`}>
+              {photoUrl ? (
+                <>
+                  <img src={photoUrl} alt="선택된 양말" className="preview-img" />
+                  <button
+                    type="button"
+                    className="photo-remove-btn"
+                    onClick={() => setPhotoUrl(null)}
+                  >
+                    초기화
+                  </button>
+                </>
+              ) : (
+                <div className="photo-empty-placeholder">
+                  <Camera size={28} />
+                  <span>양말 사진을 올려주세요</span>
+                </div>
               )}
             </div>
 
@@ -147,28 +154,10 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Camera size={18} />
-                <span>내 양말 사진 올리기</span>
+                <span>{photoUrl ? '다른 사진으로 바꾸기' : '내 양말 사진 올리기'}</span>
               </button>
 
-              <div className="preset-selector-label">또는 귀여운 캐릭터 선택:</div>
-              <div className="preset-grid">
-                {SOCK_PRESETS.map((preset) => (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    className={`preset-item ${selectedPresetId === preset.id ? 'active' : ''}`}
-                    onClick={() => handleSelectPreset(preset)}
-                    title={preset.name}
-                  >
-                    <img src={preset.svgDataUrl} alt={preset.name} className="preset-thumb" />
-                    {selectedPresetId === preset.id && (
-                      <span className="preset-check">
-                        <Check size={12} strokeWidth={3} />
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
+              {photoError && <p className="field-error-text">사진을 올려주세요.</p>}
             </div>
           </div>
         </section>
@@ -184,13 +173,16 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
             <label className="input-label">양말 이름 / 애칭</label>
             <input
               type="text"
-              className="toss-input"
+              className={`toss-input ${nameError ? 'error' : ''}`}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (nameError) setNameError(false);
+              }}
               placeholder="예: 노란 스트라이프, 발목 늘어난 짝양말"
               maxLength={25}
-              required
             />
+            {nameError && <p className="field-error-text">양말의 이름을 입력해주세요.</p>}
           </div>
 
           <div className="input-group">
@@ -213,7 +205,6 @@ export const UploadForm: React.FC<UploadFormProps> = ({ onBack, onSubmitSuccess 
               value={lastSeenDate}
               onChange={(e) => setLastSeenDate(e.target.value)}
               max={getTodayDateString()}
-              required
             />
           </div>
 

@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Search, Plus } from 'lucide-react';
+import { Header } from '../common/Header';
 import { DDayBadge } from '../common/Badge';
 import { SockMemorial, SockTone } from '../../types/sock';
 import { calculateDDay } from '../../utils/date';
+import { computeMemorialStats } from '../../utils/stats';
 
 interface GalleryViewProps {
   socks: SockMemorial[];
+  onBack: () => void;
   onAddNew: () => void;
   onSelectSock: (sock: SockMemorial) => void;
 }
@@ -14,6 +17,7 @@ type FilterType = 'all' | 'missing' | '49days' | 'reunited';
 
 export const GalleryView: React.FC<GalleryViewProps> = ({
   socks,
+  onBack,
   onAddNew,
   onSelectSock,
 }) => {
@@ -21,16 +25,30 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [selectedTone, setSelectedTone] = useState<SockTone | 'all'>('all');
 
-  const totalCount = socks.length;
-  const reunitedCount = socks.filter((s) => s.isReunited).length;
+  const filterScrollRef = useRef<HTMLDivElement>(null);
+  const [showLeftFade, setShowLeftFade] = useState(false);
+  const [showRightFade, setShowRightFade] = useState(false);
 
-  const maxMissingDays = socks.reduce((max, sock) => {
-    if (sock.isReunited) return max;
-    const d = calculateDDay(sock.lastSeenDate);
-    return Math.max(max, d);
-  }, 0);
+  const updateFilterFade = () => {
+    const el = filterScrollRef.current;
+    if (!el) return;
+    setShowLeftFade(el.scrollLeft > 4);
+    setShowRightFade(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
 
-  const filteredSocks = socks.filter((sock) => {
+  useEffect(() => {
+    updateFilterFade();
+    window.addEventListener('resize', updateFilterFade);
+    return () => window.removeEventListener('resize', updateFilterFade);
+  }, []);
+
+  const { totalCount, maxMissingDays } = computeMemorialStats(socks);
+
+  const sortedSocks = [...socks].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  const filteredSocks = sortedSocks.filter((sock) => {
     const dDay = calculateDDay(sock.lastSeenDate);
 
     // Search filter
@@ -56,30 +74,12 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
   });
 
   return (
-    <div className="view-container gallery-view">
-      {/* 1. TOP STATS BANNER */}
-      <div className="memorial-stat-card">
-        <div className="stat-main-row">
-          <div className="stat-box">
-            <span className="stat-label">총 추모 양말</span>
-            <span className="stat-value">{totalCount}<small>짝</small></span>
-          </div>
-          <div className="stat-divider" />
-          <div className="stat-box">
-            <span className="stat-label">최장 미제 실종</span>
-            <span className="stat-value highlight-days">{maxMissingDays}<small>일째</small></span>
-          </div>
-          <div className="stat-divider" />
-          <div className="stat-box">
-            <span className="stat-label">기적의 재회</span>
-            <span className="stat-value text-reunited">{reunitedCount}<small>짝</small></span>
-          </div>
-        </div>
-
-        <div className="stat-sub-notice">
-          🧦 잃어버린 한 짝을 위한 디지털 추모 공간
-        </div>
-      </div>
+    <div className="view-container gallery-view has-tab-bar">
+      {/* 0. HEADER */}
+      <Header title="나의 추모관" onBack={onBack} />
+      <p className="gallery-stat-line">
+        총 실종 양말 {totalCount}짝 · 최장 미제 {maxMissingDays}일째
+      </p>
 
       {/* 2. SEARCH & FILTER */}
       <div className="gallery-filter-bar">
@@ -94,59 +94,63 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
           />
         </div>
 
-        <div className="filter-pills-row">
-          <button
-            type="button"
-            className={`filter-pill ${filterType === 'all' && selectedTone === 'all' ? 'active' : ''}`}
-            onClick={() => {
-              setFilterType('all');
-              setSelectedTone('all');
-            }}
-          >
-            전체 보기
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${filterType === 'missing' ? 'active' : ''}`}
-            onClick={() => setFilterType('missing')}
-          >
-            실종 중 🔍
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${filterType === '49days' ? 'active' : ''}`}
-            onClick={() => setFilterType('49days')}
-          >
-            49재 🕯️
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${filterType === 'reunited' ? 'active' : ''}`}
-            onClick={() => setFilterType('reunited')}
-          >
-            재회 완료 🎉
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${selectedTone === '신파' ? 'active' : ''}`}
-            onClick={() => setSelectedTone(selectedTone === '신파' ? 'all' : '신파')}
-          >
-            신파 톤
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${selectedTone === '코믹' ? 'active' : ''}`}
-            onClick={() => setSelectedTone(selectedTone === '코믹' ? 'all' : '코믹')}
-          >
-            코믹 톤
-          </button>
-          <button
-            type="button"
-            className={`filter-pill ${selectedTone === '시적' ? 'active' : ''}`}
-            onClick={() => setSelectedTone(selectedTone === '시적' ? 'all' : '시적')}
-          >
-            시적 톤
-          </button>
+        <div className="filter-pills-scroll-wrap">
+          {showLeftFade && <span className="filter-fade filter-fade-left" />}
+          <div className="filter-pills-row" ref={filterScrollRef} onScroll={updateFilterFade}>
+            <button
+              type="button"
+              className={`filter-pill ${filterType === 'all' && selectedTone === 'all' ? 'active' : ''}`}
+              onClick={() => {
+                setFilterType('all');
+                setSelectedTone('all');
+              }}
+            >
+              전체 보기
+            </button>
+            <button
+              type="button"
+              className={`filter-pill ${filterType === 'missing' ? 'active' : ''}`}
+              onClick={() => setFilterType('missing')}
+            >
+              실종 중 🔍
+            </button>
+            <button
+              type="button"
+              className={`filter-pill ${filterType === '49days' ? 'active' : ''}`}
+              onClick={() => setFilterType('49days')}
+            >
+              49재 🕯️
+            </button>
+            <button
+              type="button"
+              className={`filter-pill ${filterType === 'reunited' ? 'active' : ''}`}
+              onClick={() => setFilterType('reunited')}
+            >
+              재회 완료 🎉
+            </button>
+            <button
+              type="button"
+              className={`filter-pill ${selectedTone === '신파' ? 'active' : ''}`}
+              onClick={() => setSelectedTone(selectedTone === '신파' ? 'all' : '신파')}
+            >
+              신파 톤
+            </button>
+            <button
+              type="button"
+              className={`filter-pill ${selectedTone === '코믹' ? 'active' : ''}`}
+              onClick={() => setSelectedTone(selectedTone === '코믹' ? 'all' : '코믹')}
+            >
+              코믹 톤
+            </button>
+            <button
+              type="button"
+              className={`filter-pill ${selectedTone === '시적' ? 'active' : ''}`}
+              onClick={() => setSelectedTone(selectedTone === '시적' ? 'all' : '시적')}
+            >
+              시적 톤
+            </button>
+          </div>
+          {showRightFade && <span className="filter-fade filter-fade-right" />}
         </div>
       </div>
 
@@ -175,9 +179,6 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               className={`memorial-grid-card ${is49 ? 'card-status-49' : ''} ${sock.isReunited ? 'card-status-reunited' : ''}`}
               onClick={() => onSelectSock(sock)}
             >
-              {is49 && <span className="card-ribbon">49재</span>}
-              {sock.isReunited && <span className="card-ribbon reunited">재회</span>}
-
               <div className="grid-card-thumb-wrap">
                 <img
                   src={sock.photoUrl}
@@ -186,17 +187,12 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                 />
               </div>
 
-              <div className="grid-card-body">
-                <div className="grid-card-name">{sock.name}</div>
-                <div className="grid-card-badge-wrap">
-                  <DDayBadge dDay={dDay} isReunited={sock.isReunited} compact />
-                </div>
-                <div className="grid-card-location">{sock.location}</div>
+              <div className="grid-card-badge-wrap-full">
+                <DDayBadge dDay={dDay} isReunited={sock.isReunited} />
               </div>
 
-              <div className="grid-card-footer">
-                <span className="tribute-counter">🌼 {sock.tributeCount}</span>
-                <span className="grid-tone-tag">{sock.tone}</span>
+              <div className="grid-card-body">
+                <div className="grid-card-name">{sock.name}</div>
               </div>
             </div>
           );
