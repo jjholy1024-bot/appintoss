@@ -1,4 +1,4 @@
-export const BACKEND_URL = 'https://socks-backend.vercel.app';
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://socks-backend.vercel.app';
 
 interface GenerateLetterParams {
   mode: 'new' | '49days' | 'reunited';
