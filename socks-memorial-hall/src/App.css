@@ -751,11 +751,11 @@
 ------------------------------------------------------------- */
 .home-view {
   min-height: auto;
-  padding-top: 28px;
+  padding-top: 40px;
 }
 
 .home-hero {
-  margin-bottom: 16px;
+  margin-bottom: 32px;
 }
 
 .home-hero-text {
@@ -768,7 +768,7 @@
   font-size: 13px;
   font-weight: 400;
   color: var(--greige-brown);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .gallery-main-title {
@@ -783,7 +783,7 @@
   font-size: 12px;
   font-weight: 400;
   color: var(--greige-brown);
-  margin-top: 4px;
+  margin-top: 10px;
 }
 
 .home-stats-row {
@@ -1661,7 +1661,7 @@
   width: 100%;
   max-width: 480px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-around;
   background: rgba(247, 245, 240, 0.96);
   backdrop-filter: blur(10px);
@@ -1686,24 +1686,6 @@
 
 .tab-bar-item.active {
   color: var(--terracotta);
-}
-
-.tab-bar-item-center {
-  margin-top: -22px;
-  color: var(--text-main);
-}
-
-.tab-bar-center-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--terracotta);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 16px rgba(181, 80, 46, 0.35);
-  margin-bottom: 2px;
 }
 
 /* -------------------------------------------------------------

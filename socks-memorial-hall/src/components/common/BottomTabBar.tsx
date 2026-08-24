@@ -1,15 +1,14 @@
 import React from 'react';
-import { Home, LayoutGrid, Plus, Settings } from 'lucide-react';
+import { Home, LayoutGrid, Settings } from 'lucide-react';
 
 type TabDestination = 'home' | 'gallery' | 'settings';
 
 interface BottomTabBarProps {
   activeTab: TabDestination;
   onNavigate: (tab: TabDestination) => void;
-  onAddNew: () => void;
 }
 
-export const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab, onNavigate, onAddNew }) => {
+export const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab, onNavigate }) => {
   return (
     <nav className="bottom-tab-bar">
       <button
@@ -28,13 +27,6 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab, onNavigat
       >
         <LayoutGrid size={20} />
         <span>전체 추모관</span>
-      </button>
-
-      <button type="button" className="tab-bar-item tab-bar-item-center" onClick={onAddNew}>
-        <span className="tab-bar-center-btn">
-          <Plus size={24} strokeWidth={2.5} />
-        </span>
-        <span>새로 등록</span>
       </button>
 
       <button

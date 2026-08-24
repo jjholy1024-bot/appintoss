@@ -160,7 +160,6 @@ function App() {
           <BottomTabBar
             activeTab={viewMode}
             onNavigate={(tab) => setViewMode(tab)}
-            onAddNew={() => setViewMode('upload')}
           />
         )}
       </main>
