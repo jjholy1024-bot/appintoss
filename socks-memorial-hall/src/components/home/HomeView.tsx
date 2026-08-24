@@ -28,7 +28,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     <div className="view-container home-view has-tab-bar">
       <div className="home-hero">
         <div className="home-hero-text">
-          <span className="gallery-greeting">오늘도 양말 한 짝, 잘 챙겨 신었나요?</span>
           <h1 className="gallery-main-title">🧦 나의 추모관</h1>
           <span className="home-hero-tagline">잃어버린 한 짝을 위한 디지털 추모 공간</span>
         </div>
