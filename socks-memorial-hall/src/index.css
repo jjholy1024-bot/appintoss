@@ -47,12 +47,17 @@
   padding: 0;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-family);
   color: var(--text-main);
   background-color: #E7E3DC;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
