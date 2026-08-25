@@ -32,6 +32,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ socks, onResetData }
         />
       )}
 
+
       <section className="form-section">
         <span className="section-title">나의 추모 활동</span>
 
@@ -91,3 +92,4 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ socks, onResetData }
     </div>
   );
 };
+

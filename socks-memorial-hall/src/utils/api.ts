@@ -1,3 +1,5 @@
+import { SockMemorial } from '../types/sock';
+
 export const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || 'https://appintoss-e4lce9dud-jjholy1024-5602s-projects.vercel.app';
 
@@ -31,11 +33,13 @@ export async function publishSharedSock(id: string, sock: unknown): Promise<void
   if (!res.ok) throw new Error('공유 등록 실패');
 }
 
-export async function fetchSharedSock(id: string): Promise<{ sock: any; tributeCount: number }> {
+export async function fetchSharedSock(id: string): Promise<{ sock: SockMemorial; tributeCount: number }> {
   const res = await fetch(`${BACKEND_URL}/api/shared-sock?id=${encodeURIComponent(id)}`);
   if (!res.ok) throw new Error('공유 카드를 찾을 수 없어요');
   return res.json();
 }
+
+
 
 export async function addSharedTribute(id: string): Promise<number> {
   const res = await fetch(`${BACKEND_URL}/api/tribute`, {

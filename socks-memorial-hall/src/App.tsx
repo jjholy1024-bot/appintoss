@@ -11,7 +11,7 @@ import { SharedSockView } from './components/shared/SharedSockView';
 import { SettingsView } from './components/settings/SettingsView';
 import { BottomTabBar } from './components/common/BottomTabBar';
 
-const STORAGE_KEY = 'socks_memorial_hall_data_v1';
+const STORAGE_KEY = 'socks_memorial_hall_data_v2';
 
 function App() {
   const [socks, setSocks] = useState<SockMemorial[]>(() => {
@@ -155,6 +155,7 @@ function App() {
         {viewMode === 'settings' && (
           <SettingsView socks={socks} onResetData={handleResetData} />
         )}
+
 
         {(viewMode === 'home' || viewMode === 'gallery' || viewMode === 'settings') && (
           <BottomTabBar

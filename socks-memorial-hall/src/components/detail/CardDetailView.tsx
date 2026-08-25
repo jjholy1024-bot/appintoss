@@ -8,7 +8,7 @@ import { calculateDDay, formatDateKorean } from '../../utils/date';
 import { downloadCardAsImage, shareCard } from '../../utils/exportCard';
 import { generateAddendum } from '../../utils/letterGenerator';
 import { publishSharedSock } from '../../utils/api';
-import { useFlowerPop, FlowerPopLayer } from '../common/FlowerPop';
+import { useFlowerPop, FlowerPopLayer, WhiteChrysanthemum } from '../common/FlowerPop';
 import { ConfirmModal } from '../common/ConfirmModal';
 
 interface CardDetailViewProps {
